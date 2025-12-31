@@ -6,10 +6,16 @@ interface RateLimitEntry {
 }
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
-
-// Rate limit: 15 requests per minute per IP
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX_REQUESTS = 15;
+
+const MODELS = [
+  "mistralai/mistral-7b-instruct:free",
+  "openchat/openchat-7b:free",
+  "gryphe/mythomax-l2-13b:free",
+  "undi95/toppy-m-7b:free",
+  "openrouter/auto",
+];
 
 function getRateLimitKey(request: NextRequest): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -28,7 +34,6 @@ function checkRateLimit(key: string): {
   const entry = rateLimitStore.get(key);
 
   if (!entry || now > entry.resetTime) {
-    // Create new entry or reset expired one
     const newEntry: RateLimitEntry = {
       count: 1,
       resetTime: now + RATE_LIMIT_WINDOW,
@@ -59,7 +64,6 @@ function checkRateLimit(key: string): {
   };
 }
 
-// Clean up old entries periodically
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of rateLimitStore.entries()) {
@@ -69,9 +73,76 @@ setInterval(() => {
   }
 }, RATE_LIMIT_WINDOW);
 
+async function generateQuizWithFallback(
+  apiKey: string,
+  prompt: string,
+  models: string[]
+): Promise<{ content: string; usedModel: string }> {
+  let lastError: Error | null = null;
+
+  for (const model of models) {
+    try {
+      console.log(`Attempting to generate quiz with model: ${model}`);
+
+      const response = await fetch(
+        `${process.env.API_ENDPOINT}/api/v1/chat/completions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+            temperature: 0.8,
+            max_tokens: 4000,
+            response_format: {
+              type: "json_object",
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `${response.status}: ${errorData.error?.message || "Unknown error"}`
+        );
+      }
+
+      const data = await response.json();
+      const content = data.choices[0]?.message?.content;
+
+      if (!content) {
+        throw new Error(`No content generated from ${model}`);
+      }
+
+      console.log(`✓ Successfully generated quiz with model: ${model}`);
+      return { content, usedModel: model };
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      console.error(
+        `✗ Model ${model} failed, trying next fallback...`,
+        lastError.message
+      );
+      continue;
+    }
+  }
+  throw new Error(
+    `All models failed to generate quiz. Last error: ${
+      lastError?.message || "Unknown error"
+    }`
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
-    // Check rate limit
     const rateLimitKey = getRateLimitKey(request);
     const rateLimit = checkRateLimit(rateLimitKey);
 
@@ -95,25 +166,28 @@ export async function POST(request: NextRequest) {
 
     const { signData, language, questionCount } = await request.json();
 
-    if (!process.env.GEMINI_API_KEY) {
+    if (!process.env.AI_API_KEY) {
       return NextResponse.json(
-        { error: "Gemini API key not configured" },
+        { error: "AI API key not configured" },
         { status: 500 }
       );
     }
 
     const prompt = `You are an expert in Thai traffic signs and road safety. Generate ${
       questionCount || 10
-    } multiple-choice quiz questions about Thai road signs.
+    } DIVERSE, RANDOM multiple-choice quiz questions about Thai road signs.
 
-For each question, provide:
-1. A clear question in both English and Thai
-2. Four answer options (one correct, three plausible but incorrect)
-3. A brief explanation of the correct answer in both languages
+IMPORTANT REQUIREMENTS:
+1. Each question must be unique and test different aspects of Thai driving knowledge
+2. Vary the question types: identification, meaning, regulations, safety scenarios, vehicle-specific rules
+3. Randomize correct answer positions: It should NEVER always be "a". Distribute correct answers evenly across a, b, c, and d
+4. Create plausible but incorrect alternatives that test understanding (avoid obviously wrong answers)
+5. Mix easy, medium, and hard difficulty questions
+6. Include questions about: speed limits, priority rules, mandatory actions, warnings, temporary signs, vehicle restrictions
 
 Use this sign data as context: ${JSON.stringify(signData)}
 
-Return the response in this exact JSON format:
+Return the response in this exact JSON format. CRITICAL: The correctAnswerId MUST be randomized (a, b, c, or d) and NOT always "a":
 {
   "questions": [
     {
@@ -126,65 +200,40 @@ Return the response in this exact JSON format:
         {"id": "c", "textEn": "Option C", "textTh": "ตัวเลือก C"},
         {"id": "d", "textEn": "Option D", "textTh": "ตัวเลือก D"}
       ],
-      "correctAnswerId": "a",
+      "correctAnswerId": "b or c or d (RANDOMIZED - NOT always 'a')".
       "explanationEn": "Explanation in English",
       "explanationTh": "คำอธิบายภาษาไทย"
     }
   ]
 }
 
+DIVERSITY CHECKLIST:
+✓ Question types vary (identification, meaning, scenarios, rules, safety)
+✓ Correct answers distributed across a, b, c, d (not clustered on 'a')
+✓ Difficulty levels mixed (easy, medium, hard)
+✓ Questions are independent and test different signs/rules
+✓ Plausible wrong answers that test real understanding
+✓ Real-world driving scenarios, not trivia
+
 Make questions educational and relevant to real driving scenarios in Thailand.`;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    const { content, usedModel } = await generateQuizWithFallback(
+      process.env.AI_API_KEY,
+      prompt,
+      MODELS
+    );
+    const quizData = JSON.parse(content);
+
+    return NextResponse.json(
+      { ...quizData, _metadata: { usedModel } },
       {
-        method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "X-RateLimit-Limit": RATE_LIMIT_MAX_REQUESTS.toString(),
+          "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+          "X-RateLimit-Reset": rateLimit.resetTime.toString(),
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: prompt }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 8000,
-            responseMimeType: "application/json",
-          },
-        }),
       }
     );
-
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error("Throw API error:", errorData);
-      return NextResponse.json(
-        { error: "Failed to generate quiz questions", details: errorData },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!generatedText) {
-      return NextResponse.json(
-        { error: "No content generated" },
-        { status: 500 }
-      );
-    }
-
-    const quizData = JSON.parse(generatedText);
-
-    return NextResponse.json(quizData, {
-      headers: {
-        "X-RateLimit-Limit": RATE_LIMIT_MAX_REQUESTS.toString(),
-        "X-RateLimit-Remaining": rateLimit.remaining.toString(),
-        "X-RateLimit-Reset": rateLimit.resetTime.toString(),
-      },
-    });
   } catch (error: unknown) {
     console.error("Error generating quiz:", error);
     return NextResponse.json(

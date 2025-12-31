@@ -134,7 +134,7 @@ export default function HomePage() {
                 <Card
                   key={category.name}
                   className="border-2 bg-card/80 backdrop-blur transition-all hover:-translate-y-1 hover:shadow-xl">
-                  <CardContent className="flex items-center gap-4 p-6">
+                  <CardContent className="flex items-center gap-4">
                     <div className="flex size-12 shrink-0 items-center justify-center rounded-lg gradient-blue-subtle">
                       <category.icon className="size-6 text-primary" />
                     </div>
@@ -224,7 +224,7 @@ export default function HomePage() {
                   <p className="text-balance text-muted-foreground text-lg leading-relaxed">
                     {locale === "en"
                       ? "Test your knowledge with dynamically generated questions powered by AI. Every quiz is unique!"
-                      : "ทดสอบความรู้ของคุณด้วยคำถามที่สร้างแบบไดนามิกด้วย Google Gemini AI ทุกแบบทดสอบไม่ซ้ำกัน!"}
+                      : "ทดสอบความรู้ของคุณด้วยคำถามที่สร้างแบบไดนามิกด้วย AI ทุกแบบทดสอบไม่ซ้ำกัน!"}
                   </p>
                   <ul className="space-y-3">
                     {[
