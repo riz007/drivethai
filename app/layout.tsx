@@ -1,9 +1,9 @@
 import type React from "react";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-
 import { LanguageProvider } from "@/contexts/language-context";
 import { Toaster } from "@/components/ui/sonner";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import "./globals.css";
 
@@ -84,6 +84,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-background text-foreground">
         <LanguageProvider>{children}</LanguageProvider>
         <Toaster />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />{" "}
       </body>
     </html>
   );
