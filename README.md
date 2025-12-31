@@ -1,6 +1,6 @@
 # DriveThai
 
-[Project description placeholder]
+Master Thai road signs and traffic regulations for motorcycles, cars, and trucks. Bilingual guide in English and Thai with interactive learning.
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
