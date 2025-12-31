@@ -49,11 +49,28 @@ export const metadata: Metadata = {
     siteName: "Thai Road Signs",
     title: "Thai Road Signs - Learn Traffic Rules",
     description: "Master Thai road signs and driving laws in English and Thai",
+    url: "https://drivethai.vercel.app",
+    images: [
+      {
+        url: "https://drivethai.vercel.app/icon-512.png",
+        width: 1200,
+        height: 630,
+        alt: "DriveThai - Learn Thai Road Signs",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Thai Road Signs - Learn Traffic Rules",
     description: "Master Thai road signs and driving laws in English and Thai",
+    images: [
+      {
+        url: "https://drivethai.vercel.app/icon-512.png",
+        width: 1200,
+        height: 630,
+        alt: "DriveThai - Learn Thai Road Signs",
+      },
+    ],
   },
   manifest: "/manifest.json",
   icons: {

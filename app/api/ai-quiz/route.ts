@@ -175,7 +175,7 @@ export async function POST(request: NextRequest) {
 
     const prompt = `You are an expert in Thai traffic signs and road safety. Generate ${
       questionCount || 10
-    } DIVERSE, RANDOM multiple-choice quiz questions about Thai road signs.
+    } DIVERSE, RANDOM multiple-choice quiz questions about Thai road signs. Return ONLY valid JSON. Do not include explanations, markdown, comments, or code fences.
 
 IMPORTANT REQUIREMENTS:
 1. Each question must be unique and test different aspects of Thai driving knowledge
@@ -200,7 +200,7 @@ Return the response in this exact JSON format. CRITICAL: The correctAnswerId MUS
         {"id": "c", "textEn": "Option C", "textTh": "ตัวเลือก C"},
         {"id": "d", "textEn": "Option D", "textTh": "ตัวเลือก D"}
       ],
-      "correctAnswerId": "b or c or d (RANDOMIZED - NOT always 'a')".
+      "correctAnswerId": "b or c or d (RANDOMIZED - NOT always 'a')",
       "explanationEn": "Explanation in English",
       "explanationTh": "คำอธิบายภาษาไทย"
     }
@@ -222,8 +222,20 @@ Make questions educational and relevant to real driving scenarios in Thailand.`;
       prompt,
       MODELS
     );
-    const quizData = JSON.parse(content);
+    const cleaned = content
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
 
+    let quizData;
+    try {
+      quizData = JSON.parse(cleaned);
+    } catch (e) {
+      console.error("AI returned invalid JSON");
+      console.error("Used model:", usedModel);
+      console.error("Raw AI content:", cleaned);
+      throw new Error("AI returned invalid JSON");
+    }
     return NextResponse.json(
       { ...quizData, _metadata: { usedModel } },
       {
