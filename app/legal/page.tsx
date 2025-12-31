@@ -118,7 +118,7 @@ export default function LegalPage() {
                       </p>
                       <p className="text-muted-foreground text-xs leading-relaxed">
                         {locale === "en"
-                          ? "This application is designed to fetch road sign data from external APIs. To connect your own data source, update the API endpoint configuration in the application settings."
+                          ? "This application is designed to fetch road sign data from external APIs. To connect your own data source, please contact us via email: rizwanulrudra@gmail.com"
                           : "แอปพลิเคชันนี้ออกแบบมาเพื่อดึงข้อมูลป้ายจราจรจาก API ภายนอก หากต้องการเชื่อมต่อแหล่งข้อมูลของคุณเอง ให้อัปเดตการตั้งค่า API endpoint ในแอปพลิเคชัน"}
                       </p>
                     </div>
@@ -186,7 +186,7 @@ export default function LegalPage() {
                       <AccordionContent>
                         <p className="text-muted-foreground text-sm leading-relaxed">
                           {locale === "en"
-                            ? "Traffic laws and regulations may change over time. While we attempt to keep information current, we cannot guarantee that all content is up-to-date. Users are responsible for verifying current regulations with official sources."
+                            ? "Traffic laws and regulations may change over time. While we attempt to keep information current, we cannot guarantee that all content is up-to-date. Some AI generated contents have been used so we cannot verify that 100%. Users are responsible for verifying current regulations with official sources."
                             : "กฎหมายและกฎระเบียบจราจรอาจเปลี่ยนแปลงตามกาลเวลา แม้ว่าเราจะพยายามรักษาข้อมูลให้ทันสมัย แต่เราไม่สามารถรับประกันได้ว่าเนื้อหาทั้งหมดเป็นปัจจุบัน ผู้ใช้มีความรับผิดชอบในการตรวจสอบกฎระเบียบปัจจุบันกับแหล่งข้อมูลอย่างเป็นทางการ"}
                         </p>
                       </AccordionContent>
@@ -389,7 +389,7 @@ export default function LegalPage() {
                 <CardContent>
                   <p className="text-muted-foreground text-sm leading-relaxed">
                     {locale === "en"
-                      ? "For questions about these legal terms, data protection, or to exercise your rights, please contact us through the official channels provided on this website."
+                      ? "For questions about these legal terms, data protection, or to exercise your rights, please contact us through email: rizwanulrudra@gmail.com"
                       : "หากมีคำถามเกี่ยวกับข้อกำหนดทางกฎหมาย การคุ้มครองข้อมูล หรือเพื่อใช้สิทธิของคุณ โปรดติดต่อเราผ่านช่องทางอย่างเป็นทางการที่ให้ไว้บนเว็บไซต์นี้"}
                   </p>
                 </CardContent>
