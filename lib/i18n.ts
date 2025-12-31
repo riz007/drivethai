@@ -3,7 +3,7 @@ export type Locale = "en" | "th";
 export const translations = {
   en: {
     common: {
-      appName: "Thai Road Signs",
+      appName: "DriveThai",
       tagline: "Master Thai Traffic Rules",
       learnMore: "Learn More",
       getStarted: "Get Started",

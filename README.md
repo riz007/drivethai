@@ -4,6 +4,18 @@
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Available Scripts](#available-scripts)
+- [API Endpoints](#api-endpoints)
+- [Contributing](#contributing)
+- [License](#license)
+- [Learn More](#learn-more)
+- [Deploy on Vercel](#deploy-on-vercel)
+
 ## Tech Stack
 
 - [Next.js](https://nextjs.org/) - React framework for production
@@ -50,6 +62,14 @@ In the project directory, you can run:
 - `GET /api/ai-quiz`: Endpoint for the AI quiz.
 - `GET /api/signs`: Endpoint for road signs.
 - `GET /api/signs/search`: Endpoint for searching road signs.
+
+## Contributing
+
+Contributions are welcome! Please see the [LICENSE.md](LICENSE.md) file for details on how to contribute to this project.
+
+## License
+
+This project is licensed under the terms of the [LICENSE.md](LICENSE.md) file.
 
 ## Learn More
 

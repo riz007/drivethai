@@ -20,10 +20,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Thai Road Signs - Learn Traffic Rules & Driving Laws",
+  title: "DriveThai - Learn Traffic Rules & Driving Laws",
   description:
     "Master Thai road signs and traffic regulations for motorcycles, cars, and trucks. Bilingual guide in English and Thai with interactive learning.",
   keywords: [
+    "Drive Thai",
+    "DriveThai",
     "Thai road signs",
     "traffic rules Thailand",
     "driving laws Thailand",
@@ -31,13 +33,13 @@ export const metadata: Metadata = {
     "road safety Thailand",
     "ป้ายจราจรไทย",
   ],
-  authors: [{ name: "Thai Road Signs" }],
+  authors: [{ name: "DriveThai" }],
   generator: "riz1.dev",
-  applicationName: "Thai Road Signs",
+  applicationName: "DriveThai",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Thai Road Signs",
+    title: "DriveThai",
   },
   formatDetection: {
     telephone: false,

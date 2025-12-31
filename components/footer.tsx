@@ -111,7 +111,7 @@ export function Footer() {
             </p>
             <p className="text-sm text-muted-foreground">
               {locale === "en"
-                ? "© 2025 Thai Road Signs. All rights reserved."
+                ? "© 2025 DriveThai. All rights reserved."
                 : "© 2025 ป้ายจราจรไทย สงวนลิขสิทธิ์"}
             </p>
           </div>
