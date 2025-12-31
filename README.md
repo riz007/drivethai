@@ -1,4 +1,30 @@
+# DriveThai
+
+[Project description placeholder]
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) - React framework for production
+- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
+- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript at Any Scale
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
+
+## Project Structure
+
+- `app/`: Contains the core application logic, including pages and API routes.
+  - `app/api/`: API routes for the application.
+  - `app/laws/`: Pages related to driving laws.
+  - `app/legal/`: Pages for legal information.
+  - `app/quiz/`: The quiz section of the application.
+  - `app/signs/`: Pages related to road signs.
+- `components/`: Reusable UI components.
+  - `components/ui/`: UI components from a component library.
+- `contexts/`: React contexts for state management.
+- `hooks/`: Custom React hooks.
+- `lib/`: Utility functions and data.
+- `public/`: Static assets.
 
 ## Getting Started
 
@@ -6,19 +32,24 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+In the project directory, you can run:
+
+- `npm run dev`: Runs the app in the development mode.
+- `npm run build`: Builds the app for production.
+- `npm run start`: Starts a production server.
+- `npm run lint`: Lints the project files.
+
+## API Endpoints
+
+- `GET /api/ai-quiz`: Endpoint for the AI quiz.
+- `GET /api/signs`: Endpoint for road signs.
+- `GET /api/signs/search`: Endpoint for searching road signs.
 
 ## Learn More
 
