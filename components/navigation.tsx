@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { useTranslation } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { UserMenu } from "@/components/user-menu";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Car } from "lucide-react";
@@ -51,12 +52,14 @@ export function Navigation() {
           ))}
           <ThemeToggle />
           <LanguageToggle />
+          <UserMenu />
         </div>
 
         {/* Mobile Navigation */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <LanguageToggle />
+          <UserMenu />
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">

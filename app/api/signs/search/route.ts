@@ -27,8 +27,7 @@ export async function GET(request: NextRequest) {
         version: "1.0",
       },
     });
-  } catch (error) {
-    console.error("Search API Error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to search road signs" },
       { status: 500 }

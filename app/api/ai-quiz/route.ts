@@ -82,8 +82,6 @@ async function generateQuizWithFallback(
 
   for (const model of models) {
     try {
-      console.log(`Attempting to generate quiz with model: ${model}`);
-
       const response = await fetch(
         `${process.env.API_ENDPOINT}/api/v1/chat/completions`,
         {
@@ -123,14 +121,9 @@ async function generateQuizWithFallback(
         throw new Error(`No content generated from ${model}`);
       }
 
-      console.log(`✓ Successfully generated quiz with model: ${model}`);
       return { content, usedModel: model };
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      console.error(
-        `✗ Model ${model} failed, trying next fallback...`,
-        lastError.message
-      );
       continue;
     }
   }
@@ -164,7 +157,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { signData, language, questionCount } = await request.json();
+    const { signData, questionCount } = await request.json();
 
     if (!process.env.AI_API_KEY) {
       return NextResponse.json(
@@ -230,10 +223,7 @@ Make questions educational and relevant to real driving scenarios in Thailand.`;
     let quizData;
     try {
       quizData = JSON.parse(cleaned);
-    } catch (e) {
-      console.error("AI returned invalid JSON");
-      console.error("Used model:", usedModel);
-      console.error("Raw AI content:", cleaned);
+    } catch {
       throw new Error("AI returned invalid JSON");
     }
     return NextResponse.json(
@@ -247,7 +237,6 @@ Make questions educational and relevant to real driving scenarios in Thailand.`;
       }
     );
   } catch (error: unknown) {
-    console.error("Error generating quiz:", error);
     return NextResponse.json(
       {
         error: "Internal server error",

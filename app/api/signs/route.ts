@@ -34,8 +34,7 @@ export async function GET(request: NextRequest) {
           "For educational purposes only. Always refer to official DLT regulations.",
       },
     });
-  } catch (error) {
-    console.error("API Error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch road signs" },
       { status: 500 }

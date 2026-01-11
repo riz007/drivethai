@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { useTranslation } from "@/lib/i18n";
+import { useAuth } from "@/contexts/auth-context";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { roadSigns } from "@/lib/road-signs-data";
 import Image from "next/image";
+import Link from "next/link";
 import {
   CheckCircle2,
   XCircle,
@@ -22,6 +24,8 @@ import {
   Sparkles,
   Clock,
   AlertCircle,
+  Lock,
+  Loader2,
 } from "lucide-react";
 import { AchievementBadge } from "@/components/achievement-badge";
 
@@ -44,6 +48,7 @@ interface QuizQuestion {
 export default function QuizPage() {
   const { locale } = useLanguage();
   const t = useTranslation(locale);
+  const { user, isLoading: authLoading } = useAuth();
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -129,7 +134,6 @@ export default function QuizPage() {
       setCorrectAnswers(0);
       setShowResults(false);
     } catch (err) {
-      console.error("Error starting AI quiz:", err);
       setError(err instanceof Error ? err.message : "Failed to start quiz");
     } finally {
       setIsLoading(false);
@@ -194,6 +198,71 @@ export default function QuizPage() {
     if (!currentQuestion) return null;
     return roadSigns.find((sign) => sign.id === currentQuestion.signId);
   };
+
+  // Show loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Navigation />
+        <main className="flex-1">
+          <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5">
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="size-12 animate-spin text-primary" />
+              <p className="text-muted-foreground">
+                {locale === "en" ? "Loading..." : "กำลังโหลด..."}
+              </p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show auth gate if user is not logged in
+  if (!user) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Navigation />
+        <main className="flex-1">
+          <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 px-4 py-12">
+            <Card className="w-full max-w-md border-2 shadow-lg">
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-secondary/20">
+                  <Lock className="size-10 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">
+                  {t.auth.authRequired}
+                </CardTitle>
+                <p className="text-balance text-muted-foreground leading-relaxed">
+                  {t.auth.authRequiredDesc}
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button
+                  asChild
+                  className="w-full gap-2 bg-gradient-to-r from-primary via-accent to-secondary hover:opacity-90">
+                  <Link href="/auth?redirect=/quiz">
+                    <Sparkles className="size-4" />
+                    {t.auth.signIn}
+                  </Link>
+                </Button>
+                <p className="text-center text-sm text-muted-foreground">
+                  {t.auth.noAccount}{" "}
+                  <Link
+                    href="/auth?redirect=/quiz"
+                    className="text-primary hover:underline">
+                    {t.auth.signUp}
+                  </Link>
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!quizStarted) {
     return (

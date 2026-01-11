@@ -24,8 +24,7 @@ export async function fetchRoadSigns(): Promise<RoadSign[]> {
 
     const data = await response.json();
     return data.signs || [];
-  } catch (error) {
-    console.error("Error fetching road signs:", error);
+  } catch {
     // Fallback to local data if API fails
     const { roadSigns } = await import("./road-signs-data");
     return roadSigns;
@@ -47,8 +46,7 @@ export async function fetchRoadSignsByCategory(
 
     const data = await response.json();
     return data.signs || [];
-  } catch (error) {
-    console.error("Error fetching road signs by category:", error);
+  } catch {
     // Fallback to local data
     const { getSignsByCategory } = await import("./road-signs-data");
     return getSignsByCategory(category as any);
@@ -70,8 +68,7 @@ export async function fetchRoadSignsByVehicle(
 
     const data = await response.json();
     return data.signs || [];
-  } catch (error) {
-    console.error("Error fetching road signs by vehicle:", error);
+  } catch {
     // Fallback to local data
     const { getSignsByVehicle } = await import("./road-signs-data");
     return getSignsByVehicle(vehicle as any);
@@ -98,8 +95,7 @@ export async function searchRoadSigns(
 
     const data = await response.json();
     return data.signs || [];
-  } catch (error) {
-    console.error("Error searching road signs:", error);
+  } catch {
     // Fallback to local search
     const { searchSigns } = await import("./road-signs-data");
     return searchSigns(query, locale);
